@@ -1,6 +1,7 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ namespace bomber
     {
         public static SpriteBatch Batch;
         public static ContentManager Content;
+        public static TileMap Map;
         public const int TileWidth = 16;
         public const int TileHeight = 16;
     }
@@ -53,7 +55,6 @@ namespace bomber
         private float jumpVelocity = 5.0f;
         private Boolean jumping = false;
 
-
         public Player(Texture2D texture, Rectangle box) : base(texture, box)
         {
         }
@@ -62,12 +63,20 @@ namespace bomber
         {
             Direction = -1;
             Box.X -= (int) vx;
+            if (Globals.Map.Collide(this))
+            {
+                Box.X = ((Box.X / Globals.TileWidth) + 1) * Globals.TileWidth;
+            }
         }
 
         public void WalkRight()
         {
-            Direction += 1;
+            Direction = 1;
             Box.X += (int)vx;
+            if (Globals.Map.Collide(this))
+            {
+                Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth;
+            }
         }
 
         public void Jump()
@@ -81,7 +90,7 @@ namespace bomber
 
         public void Update()
         {
-            Box.Y += (int) vy;
+            Box.Y += (int)vy;
             vy += gravity;
 
             if (vy > maxV)
@@ -89,10 +98,18 @@ namespace bomber
                 vy = maxV;
             }
 
-            if (Box.Y >= 100)
+            if (Globals.Map.Collide(this))
             {
+                if (vy > 0)
+                {
+                    Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight;
+                    jumping = false;
+                }
+                else
+                {
+                    Box.Y = ((Box.Y / Globals.TileHeight) + 1) * Globals.TileHeight;
+                }
                 vy = 0;
-                jumping = false;
             }
         }
     }
@@ -143,20 +160,31 @@ namespace bomber
             {
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    Rectangle rect = new Rectangle(i * Globals.TileWidth,
-                                                   j * Globals.TileHeight,
+                    Rectangle rect = new Rectangle(j * Globals.TileWidth,
+                                                   i * Globals.TileHeight,
                                                    Globals.TileWidth,
                                                    Globals.TileHeight);
                     if (map[i, j] == 1)
                     {
-                        Tiles[i, j] = new Metal(rect);
+                        Tiles[j, i] = new Metal(rect);
                     }
                     else if (map[i, j] == 2)
                     {
-                        Tiles[i, j] = new Brick(rect);
+                        Tiles[j, i] = new Brick(rect);
                     }
                 }
             }
+        }
+
+        public Boolean Collide(Sprite sprite)
+        {
+            int top = sprite.Box.Top / Globals.TileHeight;
+            int bottom = (sprite.Box.Bottom - 1) / Globals.TileHeight;
+            int left = sprite.Box.Left / Globals.TileWidth;
+            int right = (sprite.Box.Right - 1) / Globals.TileWidth;
+ 
+            Tile[] tilesToCheck = new Tile[] { Tiles[left, top], Tiles[right, top], Tiles[left, bottom], Tiles[right, bottom] };
+            return tilesToCheck.Where(t => t != null).Any(t => t.Solid);
         }
 
         public void Draw()
@@ -176,11 +204,12 @@ namespace bomber
     /// </summary>
     public class Game1 : Game
     {
-        public static int Scale = 2;
+        public const int Scale = 2;
+        public const int Width = 256;
+        public const int Height = 240;
 
         private GraphicsDeviceManager graphics;
         private Player player;
-        private TileMap map;
         //private Boolean resized = false;
 
         public Game1()
@@ -188,6 +217,8 @@ namespace bomber
             graphics = new GraphicsDeviceManager(this);
             Globals.Content = Content;
             Globals.Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferHeight = Height * Scale;
+            graphics.PreferredBackBufferWidth = Width * Scale;
             graphics.IsFullScreen = false;
         }
 
@@ -213,12 +244,23 @@ namespace bomber
             Globals.Batch = new SpriteBatch(GraphicsDevice);
 
             player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16));
-            map = new TileMap(4, 4);
-            map.LoadMap(new int[,] {
-                {0, 1, 1, 0},
-                {1, 0, 0, 0},
-                {2, 2, 2, 2},
-                {1, 2, 1, 2}
+            Globals.Map = new TileMap(16, 15);
+            Globals.Map.LoadMap(new int[,] {
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 });        
 
         }
@@ -230,10 +272,6 @@ namespace bomber
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //Console.WriteLine(gameTime.ElapsedGameTime.Milliseconds);
-            //GamePadState pad = GamePad.GetState(PlayerIndex.One);
-            //float x = pad.ThumbSticks.Left.X;
-            //Console.WriteLine(x);
 
             /*
             if (gameTime.TotalGameTime.Milliseconds > 500 && !resized)
@@ -277,7 +315,7 @@ namespace bomber
 
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
             player.Draw();
-            map.Draw();
+            Globals.Map.Draw();
             Globals.Batch.End();
         }
     }
