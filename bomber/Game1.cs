@@ -20,6 +20,18 @@ namespace bomber
         public static TileMap Map;
         public const int TileWidth = 16;
         public const int TileHeight = 16;
+        public const int Width = 320;
+        public const int Height = 240;
+
+        public static int WrappedY(int y)
+        {
+            return (y + Height) % Height;
+        }
+
+        public static int WrappedX(int x)
+        {
+            return (x + Width) % Width;
+        }
     }
 
     public class Sprite
@@ -43,6 +55,12 @@ namespace bomber
         {
             SpriteEffects effect = Direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Globals.Batch.Draw(texture, Box, null, Color.White, 0.0f, new Vector2(0, 0), effect, 0.0f);
+            Rectangle BoxWrapX = new Rectangle(Box.X, Box.Y, Box.Width, Box.Height);
+            Rectangle BoxWrapY = new Rectangle(Box.X, Box.Y, Box.Width, Box.Height);
+            BoxWrapX.X -= Globals.Width;
+            BoxWrapY.Y -= Globals.Height;
+            Globals.Batch.Draw(texture, BoxWrapX, null, Color.White, 0.0f, new Vector2(0, 0), effect, 0.0f);
+            Globals.Batch.Draw(texture, BoxWrapY, null, Color.White, 0.0f, new Vector2(0, 0), effect, 0.0f);
         }
     }
 
@@ -50,7 +68,8 @@ namespace bomber
     {
         private float vy = 0.0f;
         private float vx = 1.0f;
-        private float maxV = 16.0f;
+        //private float maxV = 16.0f;
+        private float maxV = 10.0f;
         private float gravity = 0.3f;
         private float jumpVelocity = 5.0f;
         private Boolean jumping = false;
@@ -67,6 +86,7 @@ namespace bomber
             {
                 Box.X = ((Box.X / Globals.TileWidth) + 1) * Globals.TileWidth;
             }
+            Box.X = Globals.WrappedX(Box.X);
         }
 
         public void WalkRight()
@@ -77,6 +97,7 @@ namespace bomber
             {
                 Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth;
             }
+            Box.X = Globals.WrappedX(Box.X);
         }
 
         public void Jump()
@@ -91,6 +112,7 @@ namespace bomber
         public void Update()
         {
             Box.Y += (int)vy;
+            Box.Y = Globals.WrappedY(Box.Y);
             vy += gravity;
 
             if (vy > maxV)
@@ -109,6 +131,7 @@ namespace bomber
                 {
                     Box.Y = ((Box.Y / Globals.TileHeight) + 1) * Globals.TileHeight;
                 }
+                Box.Y = Globals.WrappedY(Box.Y);
                 vy = 0;
             }
         }
@@ -178,10 +201,10 @@ namespace bomber
 
         public Boolean Collide(Sprite sprite)
         {
-            int top = sprite.Box.Top / Globals.TileHeight;
-            int bottom = (sprite.Box.Bottom - 1) / Globals.TileHeight;
-            int left = sprite.Box.Left / Globals.TileWidth;
-            int right = (sprite.Box.Right - 1) / Globals.TileWidth;
+            int top = Globals.WrappedY(sprite.Box.Top) / Globals.TileHeight;
+            int bottom = Globals.WrappedY(sprite.Box.Bottom - 1) / Globals.TileHeight;
+            int left = Globals.WrappedX(sprite.Box.Left) / Globals.TileWidth;
+            int right = Globals.WrappedX(sprite.Box.Right - 1) / Globals.TileWidth;
  
             Tile[] tilesToCheck = new Tile[] { Tiles[left, top], Tiles[right, top], Tiles[left, bottom], Tiles[right, bottom] };
             return tilesToCheck.Where(t => t != null).Any(t => t.Solid);
@@ -205,8 +228,6 @@ namespace bomber
     public class Game1 : Game
     {
         public const int Scale = 2;
-        public const int Width = 256;
-        public const int Height = 240;
 
         private GraphicsDeviceManager graphics;
         private Player player;
@@ -217,9 +238,10 @@ namespace bomber
             graphics = new GraphicsDeviceManager(this);
             Globals.Content = Content;
             Globals.Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferHeight = Height * Scale;
-            graphics.PreferredBackBufferWidth = Width * Scale;
-            graphics.IsFullScreen = false;
+
+            //graphics.PreferredBackBufferWidth = 1680;
+            //graphics.PreferredBackBufferHeight = 1050;
+            //graphics.IsFullScreen = true;
         }
 
         /// <summary>
@@ -244,23 +266,24 @@ namespace bomber
             Globals.Batch = new SpriteBatch(GraphicsDevice);
 
             player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16));
-            Globals.Map = new TileMap(16, 15);
+            Globals.Map = new TileMap(20, 16);
             Globals.Map.LoadMap(new int[,] {
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 });        
 
         }
@@ -277,11 +300,13 @@ namespace bomber
             if (gameTime.TotalGameTime.Milliseconds > 500 && !resized)
             {
                 resized = true;
-                graphics.PreferredBackBufferWidth = 256 * Scale;
-                graphics.PreferredBackBufferHeight = 240 * Scale;
+                graphics.PreferredBackBufferWidth = 800;
+                graphics.PreferredBackBufferHeight = 600;
+                graphics.IsFullScreen = true;
                 graphics.ApplyChanges();
             }
             */
+
 
             KeyboardState kbs = Keyboard.GetState();
             if (kbs.IsKeyDown(Keys.Right))
