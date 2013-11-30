@@ -21,6 +21,8 @@ namespace bomber
         private float gravity = 0.3f;
         private float throwVelocity = 5.0f;
         private int time;
+        private float restitution = 0.6f;
+        private float friction = 0.8f;
         public bool Dead;
 
         public Bomb(Texture2D texture, Rectangle box) : base(texture, box)
@@ -42,8 +44,6 @@ namespace bomber
             Box.Y += (int)vy;
             Box.Y = Globals.WrappedY(Box.Y);
 
-            vy += gravity;
-
             if (vy > maxV)
             {
                 vy = maxV;
@@ -60,8 +60,13 @@ namespace bomber
                     Box.Y = ((Box.Y / Globals.TileHeight) + 1) * Globals.TileHeight;
                 }
                 Box.Y = Globals.WrappedY(Box.Y);
-                vy = 0;
-                vx = 0;
+                vy = -vy * restitution;
+                vx = vx * friction;
+                //vx = vx * restitution;
+            }
+            else
+            {
+                vy += gravity;
             }
 
             Box.X += (int)vx;
@@ -78,7 +83,9 @@ namespace bomber
                     Box.X = ((Box.X / Globals.TileHeight) + 1) * Globals.TileHeight;
                 }
                 Box.X = Globals.WrappedX(Box.X);
-                vx = 0;
+                vx = -vx * restitution;
+                vy = vy * friction;
+                //vy = vy * restitution;
             }
         }
 

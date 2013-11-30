@@ -1,10 +1,30 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="bomber/Game1.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="bomber/Bomb.cs">
     <Files>
-      <File FileName="bomber/Game1.cs" Line="108" Column="32" />
-      <File FileName="bomber/Program.cs" Line="1" Column="1" />
+      <File FileName="bomber/Game1.cs" Line="118" Column="78" />
+      <File FileName="bomber/Player.cs" Line="18" Column="33" />
+      <File FileName="bomber/Bomb.cs" Line="11" Column="1" />
+      <File FileName="bomber/Sprite.cs" Line="12" Column="11" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="bomber" expanded="True">
+            <Node name="Content" expanded="True">
+              <Node name="Textures" expanded="True" />
+            </Node>
+            <Node name="Bomb.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

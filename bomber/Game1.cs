@@ -46,7 +46,7 @@ namespace bomber
         private List<Bomb> bombs = new List<Bomb>();
         private int bombCooldown = 0;
         private int bombHold = 0;
-        private int bombHoldMax = 2000;
+        private int bombHoldMax = 1000;
         //private Boolean resized = false;
 
         public Game1()
@@ -82,7 +82,8 @@ namespace bomber
             Globals.Batch = new SpriteBatch(GraphicsDevice);
 
             player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16));
-            Globals.Map = new TileMap(20, 16);
+            Globals.Map = new TileMap(20, 15);
+            /*
             Globals.Map.LoadMap(new int[,] {
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -98,9 +99,27 @@ namespace bomber
                 {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
+                });
+                */
+
+            Globals.Map.LoadMap(new int[,] {
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                });        
+                {1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
+            });
 
         }
 
@@ -144,15 +163,16 @@ namespace bomber
                 bombHold += gameTime.ElapsedGameTime.Milliseconds;
                 if (bombHold > bombHoldMax)
                     bombHold = bombHoldMax;
+                //Console.WriteLine(bombHold);
             }
             if (kbs.IsKeyUp(Keys.X) && bombHold > 0)
             {
                 Bomb b = new Bomb(Content.Load<Texture2D>("Textures/bomb.png"), player.Box);
                 float throwPower = (float)bombHold / (float)bombHoldMax;
                 b.Throw(throwPower, player.Direction);
-                Console.WriteLine(throwPower);
+                //Console.WriteLine(throwPower);
                 bombs.Add(b);
-                bombCooldown = 3000;
+                bombCooldown = 200;
                 bombHold = 0;
             }
 
