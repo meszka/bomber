@@ -43,6 +43,10 @@ namespace bomber
 
         private GraphicsDeviceManager graphics;
         private Player player;
+        private List<Bomb> bombs = new List<Bomb>();
+        private int bombCooldown = 0;
+        private int bombHold = 0;
+        private int bombHoldMax = 2000;
         //private Boolean resized = false;
 
         public Game1()
@@ -119,7 +123,9 @@ namespace bomber
             }
             */
 
-
+            bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
+            if (bombCooldown < 0)
+                bombCooldown = 0;
             KeyboardState kbs = Keyboard.GetState();
             if (kbs.IsKeyDown(Keys.Right))
             {
@@ -133,8 +139,29 @@ namespace bomber
             {
                 player.Jump();
             }
+            if (kbs.IsKeyDown(Keys.X) && bombCooldown == 0)
+            {
+                bombHold += gameTime.ElapsedGameTime.Milliseconds;
+                if (bombHold > bombHoldMax)
+                    bombHold = bombHoldMax;
+            }
+            if (kbs.IsKeyUp(Keys.X) && bombHold > 0)
+            {
+                Bomb b = new Bomb(Content.Load<Texture2D>("Textures/bomb.png"), player.Box);
+                float throwPower = (float)bombHold / (float)bombHoldMax;
+                b.Throw(throwPower, player.Direction);
+                Console.WriteLine(throwPower);
+                bombs.Add(b);
+                bombCooldown = 3000;
+                bombHold = 0;
+            }
 
             player.Update();
+            bombs.RemoveAll(b => b.Dead);
+            foreach (Bomb b in bombs)
+            {
+                b.Update(gameTime);
+            }
 
             // TODO: Add your update logic here			
             base.Update(gameTime);
@@ -152,6 +179,10 @@ namespace bomber
 
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
             player.Draw();
+            foreach (Bomb b in bombs)
+            {
+                b.Draw();
+            }
             Globals.Map.Draw();
             Globals.Batch.End();
         }
