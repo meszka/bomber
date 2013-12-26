@@ -44,9 +44,10 @@ namespace bomber
         private GraphicsDeviceManager graphics;
         private Player player;
         private List<Bomb> bombs = new List<Bomb>();
+        private List<Explosion> explosions = new List<Explosion>();
         private int bombCooldown = 0;
         private int bombHold = 0;
-        private int bombHoldMax = 1000;
+        private int bombHoldMax = 500;
         //private Boolean resized = false;
 
         public Game1()
@@ -177,10 +178,19 @@ namespace bomber
             }
 
             player.Update();
+            foreach (Bomb b in bombs.Where(b => b.Dead))
+            {
+                explosions.Add(new Explosion(new Rectangle(b.Box.X - 32, b.Box.Y - 32, 64, 64)));
+            }
             bombs.RemoveAll(b => b.Dead);
+            explosions.RemoveAll(e => e.Dead);
             foreach (Bomb b in bombs)
             {
                 b.Update(gameTime);
+            }
+            foreach (Explosion e in explosions)
+            {
+                e.Update(gameTime);
             }
 
             // TODO: Add your update logic here			
@@ -202,6 +212,10 @@ namespace bomber
             foreach (Bomb b in bombs)
             {
                 b.Draw();
+            }
+            foreach (Explosion e in explosions)
+            {
+                e.Draw();
             }
             Globals.Map.Draw();
             Globals.Batch.End();

@@ -47,6 +47,7 @@
     <Compile Include="Tile.cs" />
     <Compile Include="TileMap.cs" />
     <Compile Include="Bomb.cs" />
+    <Compile Include="Explosion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Textures\brick.gif">
