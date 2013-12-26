@@ -58,7 +58,7 @@ namespace bomber
             }
         }
 
-        public void Update()
+        public override void Update(GameTime gameTime)
         {
             Box.Y += (int)vy;
             Box.Y = Globals.WrappedY(Box.Y);

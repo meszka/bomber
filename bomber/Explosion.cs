@@ -16,7 +16,6 @@ namespace bomber
     public class Explosion : Sprite
     {
         private int time;
-        public bool Dead = false;
 
         public Explosion(Rectangle box) :
             base (Globals.Content.Load<Texture2D>("Textures/explosion.png"), box)
@@ -24,7 +23,7 @@ namespace bomber
             time = 500;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (Dead)
                 return;

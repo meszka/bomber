@@ -23,14 +23,13 @@ namespace bomber
         private int time;
         private float restitution = 0.6f;
         private float friction = 0.8f;
-        public bool Dead = false;
 
         public Bomb(Texture2D texture, Rectangle box) : base(texture, box)
         {
             time = 3000;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (Dead)
                 return;
@@ -99,6 +98,11 @@ namespace bomber
         public void Die()
         {
             Dead = true;
+        }
+
+        public override void AfterDeath()
+        {
+            new Explosion(new Rectangle(Box.X - 32, Box.Y - 32, 64, 64));
         }
 
     }

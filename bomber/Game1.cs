@@ -43,8 +43,6 @@ namespace bomber
 
         private GraphicsDeviceManager graphics;
         private Player player;
-        private List<Bomb> bombs = new List<Bomb>();
-        private List<Explosion> explosions = new List<Explosion>();
         private int bombCooldown = 0;
         private int bombHold = 0;
         private int bombHoldMax = 500;
@@ -172,26 +170,11 @@ namespace bomber
                 float throwPower = (float)bombHold / (float)bombHoldMax;
                 b.Throw(throwPower, player.Direction);
                 //Console.WriteLine(throwPower);
-                bombs.Add(b);
                 bombCooldown = 200;
                 bombHold = 0;
             }
 
-            player.Update();
-            foreach (Bomb b in bombs.Where(b => b.Dead))
-            {
-                explosions.Add(new Explosion(new Rectangle(b.Box.X - 32, b.Box.Y - 32, 64, 64)));
-            }
-            bombs.RemoveAll(b => b.Dead);
-            explosions.RemoveAll(e => e.Dead);
-            foreach (Bomb b in bombs)
-            {
-                b.Update(gameTime);
-            }
-            foreach (Explosion e in explosions)
-            {
-                e.Update(gameTime);
-            }
+            Sprite.UpdateAll(gameTime);
 
             // TODO: Add your update logic here			
             base.Update(gameTime);
@@ -208,15 +191,7 @@ namespace bomber
             base.Draw(gameTime);
 
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
-            player.Draw();
-            foreach (Bomb b in bombs)
-            {
-                b.Draw();
-            }
-            foreach (Explosion e in explosions)
-            {
-                e.Draw();
-            }
+            Sprite.DrawAll();
             Globals.Map.Draw();
             Globals.Batch.End();
         }
