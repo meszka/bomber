@@ -15,21 +15,22 @@ namespace bomber
 {
     public class Bomb : Sprite
     {
-        private float vy = 0.0f;
-        private float vx = 0.0f;
-        private float maxV = 10.0f;
-        private float gravity = 0.3f;
-        private float throwVelocity = 8.0f;
-        private int time;
-        private float restitution = 0.5f;
-        private float friction = 0.7f;
+        protected float vy = 0.0f;
+        protected float vx = 0.0f;
+        protected float maxV = 10.0f;
+        protected float gravity = 0.3f;
+        protected float throwVelocity = 8.0f;
+        protected int time;
+        protected float restitution = 0.5f;
+        protected float friction = 0.7f;
 
-        public Bomb(Texture2D texture, Rectangle box) : base(texture, box)
+        public Bomb(Rectangle box) :
+            base(Globals.Content.Load<Texture2D>("Textures/bomb.png"), box)
         {
             time = 1500;
         }
 
-        public override void Update(GameTime gameTime)
+        protected void handleDeath(GameTime gameTime)
         {
             if (Dead)
                 return;
@@ -39,52 +40,69 @@ namespace bomber
                 time = 0;
             if (time == 0)
                 Die();
+        }
 
-            Box.Y += (int)vy;
+        protected void handleYCollision()
+        {
+            if (vy > 0)
+            {
+                Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight;
+            }
+            else
+            {
+                Box.Y = ((Box.Y / Globals.TileHeight) + 1) * Globals.TileHeight;
+            }
             Box.Y = Globals.WrappedY(Box.Y);
+            vy = -vy * restitution;
+            vx = vx * friction;
+            //vx = vx * restitution;
+        }
 
+        protected void handleXCollision()
+        {
+            if (vx > 0)
+            {
+                Box.X = (Box.X / Globals.TileHeight) * Globals.TileHeight;
+            }
+            else
+            {
+                Box.X = ((Box.X / Globals.TileHeight) + 1) * Globals.TileHeight;
+            }
+            Box.X = Globals.WrappedX(Box.X);
+            vx = -vx * restitution;
+            vy = vy * friction;
+            //vy = vy * restitution;
+        }
+
+        protected void moveX()
+        {
+            Box.X = Globals.WrappedX(Box.X + (int)vx);
+        }
+
+        protected void moveY()
+        {
+            Box.Y = Globals.WrappedY(Box.Y + (int)vy);
+            vy += gravity;
             if (vy > maxV)
             {
                 vy = maxV;
             }
+        }
 
+        public override void Update(GameTime gameTime)
+        {
+            handleDeath(gameTime);
+
+            moveY();
             if (Globals.Map.Collide(this).Any())
             {
-                if (vy > 0)
-                {
-                    Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight;
-                }
-                else
-                {
-                    Box.Y = ((Box.Y / Globals.TileHeight) + 1) * Globals.TileHeight;
-                }
-                Box.Y = Globals.WrappedY(Box.Y);
-                vy = -vy * restitution;
-                vx = vx * friction;
-                //vx = vx * restitution;
-            }
-            else
-            {
-                vy += gravity;
+                handleYCollision();
             }
 
-            Box.X += (int)vx;
-            Box.X = Globals.WrappedX(Box.X);
-
+            moveX();
             if (Globals.Map.Collide(this).Any())
             {
-                if (vx > 0)
-                {
-                    Box.X = (Box.X / Globals.TileHeight) * Globals.TileHeight;
-                }
-                else
-                {
-                    Box.X = ((Box.X / Globals.TileHeight) + 1) * Globals.TileHeight;
-                }
-                Box.X = Globals.WrappedX(Box.X);
-                vx = -vx * restitution;
-                vy = vy * friction;
-                //vy = vy * restitution;
+                handleXCollision();
             }
         }
 
@@ -105,6 +123,37 @@ namespace bomber
             new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
         }
 
+    }
+
+    public class StickyBomb : Bomb
+    {
+        private bool stuck = false;
+
+        public StickyBomb(Rectangle box) : base(box)
+        {
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            handleDeath(gameTime);
+
+            if (stuck)
+                return;
+
+            moveY();
+            if (Globals.Map.Collide(this).Any())
+            {
+                handleYCollision();
+                stuck = true;
+            }
+
+            moveX();
+            if (Globals.Map.Collide(this).Any())
+            {
+                handleXCollision();
+                stuck = true;
+            }
+        }
     }
 }
 

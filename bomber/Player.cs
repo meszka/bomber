@@ -60,8 +60,7 @@ namespace bomber
 
         public override void Update(GameTime gameTime)
         {
-            Box.Y += (int)vy;
-            Box.Y = Globals.WrappedY(Box.Y);
+            Box.Y = Globals.WrappedY(Box.Y + (int)vy);
             vy += gravity;
 
             if (vy > maxV)

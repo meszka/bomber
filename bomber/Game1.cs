@@ -166,7 +166,7 @@ namespace bomber
             }
             if (kbs.IsKeyUp(Keys.X) && bombHold > 0)
             {
-                Bomb b = new Bomb(Content.Load<Texture2D>("Textures/bomb.png"), player.Box);
+                Bomb b = new Bomb(player.Box);
                 float throwPower = (float)bombHold / (float)bombHoldMax;
                 b.Throw(throwPower, player.Direction);
                 //Console.WriteLine(throwPower);
