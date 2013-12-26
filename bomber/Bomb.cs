@@ -74,6 +74,15 @@ namespace bomber
             //vy = vy * restitution;
         }
 
+        protected void handleGravity()
+        {
+            vy += gravity;
+            if (vy > maxV)
+            {
+                vy = maxV;
+            }
+        }
+
         protected void moveX()
         {
             Box.X = Globals.WrappedX(Box.X + (int)vx);
@@ -82,17 +91,13 @@ namespace bomber
         protected void moveY()
         {
             Box.Y = Globals.WrappedY(Box.Y + (int)vy);
-            vy += gravity;
-            if (vy > maxV)
-            {
-                vy = maxV;
-            }
         }
 
         public override void Update(GameTime gameTime)
         {
             handleDeath(gameTime);
 
+            handleGravity();
             moveY();
             if (Globals.Map.Collide(this).Any())
             {
@@ -140,6 +145,7 @@ namespace bomber
             if (stuck)
                 return;
 
+            handleGravity();
             moveY();
             if (Globals.Map.Collide(this).Any())
             {
@@ -152,6 +158,42 @@ namespace bomber
             {
                 handleXCollision();
                 stuck = true;
+            }
+        }
+    }
+
+    public class FloatingBomb : Bomb
+    {
+
+        public FloatingBomb(Rectangle box) : base(box)
+        {
+        }
+
+        protected void handleGravityFloaty()
+        {
+            vy += gravity;
+            if (vy > 0)
+            {
+                vx = 0;
+                vy = 0;
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            handleDeath(gameTime);
+
+            handleGravityFloaty();
+            moveY();
+            if (Globals.Map.Collide(this).Any())
+            {
+                handleYCollision();
+            }
+
+            moveX();
+            if (Globals.Map.Collide(this).Any())
+            {
+                handleXCollision();
             }
         }
     }
