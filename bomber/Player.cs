@@ -31,7 +31,7 @@ namespace bomber
         {
             Direction = -1;
             Box.X -= (int) vx;
-            if (Globals.Map.Collide(this))
+            if (Globals.Map.Collide(this).Any())
             {
                 Box.X = ((Box.X / Globals.TileWidth) + 1) * Globals.TileWidth;
             }
@@ -42,7 +42,7 @@ namespace bomber
         {
             Direction = 1;
             Box.X += (int)vx;
-            if (Globals.Map.Collide(this))
+            if (Globals.Map.Collide(this).Any())
             {
                 Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth;
             }
@@ -69,7 +69,7 @@ namespace bomber
                 vy = maxV;
             }
 
-            if (Globals.Map.Collide(this))
+            if (Globals.Map.Collide(this).Any())
             {
                 if (vy > 0)
                 {

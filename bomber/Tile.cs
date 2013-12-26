@@ -20,6 +20,9 @@ namespace bomber
 
         public Boolean Solid { get { return solid; } }
         public Boolean Destroyable { get { return destroyable; } }
+        public virtual void Die()
+        {
+        }
     }
 
     public class Brick : Tile
@@ -30,6 +33,11 @@ namespace bomber
             destroyable = true;
             texture = Globals.Content.Load<Texture2D>("Textures/brick.png");
             Box = box;
+        }
+
+        public override void Die()
+        {
+            Dead = true;
         }
     }
 

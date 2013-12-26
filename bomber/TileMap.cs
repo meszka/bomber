@@ -17,9 +17,14 @@ namespace bomber
     {
         public Tile[,] Tiles { get; set; }
 
+        public int Width;
+        public int Height;
+
         public TileMap(int width, int height)
         {
             Tiles = new Tile[width, height];
+            Width = width;
+            Height = height;
         }
 
         public void LoadMap(int [,] map)
@@ -44,15 +49,25 @@ namespace bomber
             }
         }
 
-        public Boolean Collide(Sprite sprite)
+        public List<Tile> Collide(Sprite sprite)
         {
             int top = Globals.WrappedY(sprite.Box.Top) / Globals.TileHeight;
             int bottom = Globals.WrappedY(sprite.Box.Bottom - 1) / Globals.TileHeight;
             int left = Globals.WrappedX(sprite.Box.Left) / Globals.TileWidth;
             int right = Globals.WrappedX(sprite.Box.Right - 1) / Globals.TileWidth;
 
-            Tile[] tilesToCheck = new Tile[] { Tiles[left, top], Tiles[right, top], Tiles[left, bottom], Tiles[right, bottom] };
-            return tilesToCheck.Where(t => t != null).Any(t => t.Solid);
+            List<Tile> tilesToCheck = new List<Tile>();
+            for (int i = left; i != (right + 1) % Width; i = (i + 1) % Width)
+            {
+                for (int j = top; j != (bottom + 1) % Height; j = (j + 1) % Height)
+                {
+                    if (Tiles[i, j] != null && Tiles[i, j].Solid)
+                    {
+                        tilesToCheck.Add(Tiles[i, j]);
+                    }
+                }
+            }
+            return tilesToCheck;
         }
 
         public void Draw()
@@ -62,6 +77,23 @@ namespace bomber
                 if (t != null)
                 {
                     t.Draw();
+                }
+            }
+        }
+
+        public void Update()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    if (Tiles[i, j] != null)
+                    {
+                        if (Tiles[i, j].Dead)
+                        {
+                            Tiles[i, j] = null;
+                        }
+                    }
                 }
             }
         }

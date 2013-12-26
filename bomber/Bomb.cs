@@ -26,7 +26,7 @@ namespace bomber
 
         public Bomb(Texture2D texture, Rectangle box) : base(texture, box)
         {
-            time = 3000;
+            time = 1500;
         }
 
         public override void Update(GameTime gameTime)
@@ -48,7 +48,7 @@ namespace bomber
                 vy = maxV;
             }
 
-            if (Globals.Map.Collide(this))
+            if (Globals.Map.Collide(this).Any())
             {
                 if (vy > 0)
                 {
@@ -71,7 +71,7 @@ namespace bomber
             Box.X += (int)vx;
             Box.X = Globals.WrappedX(Box.X);
 
-            if (Globals.Map.Collide(this))
+            if (Globals.Map.Collide(this).Any())
             {
                 if (vx > 0)
                 {
@@ -102,7 +102,7 @@ namespace bomber
 
         public override void AfterDeath()
         {
-            new Explosion(new Rectangle(Box.X - 32, Box.Y - 32, 64, 64));
+            new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
         }
 
     }

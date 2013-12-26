@@ -33,6 +33,12 @@ namespace bomber
                 time = 0;
             if (time == 0)
                 Die();
+
+            List<Tile> tiles = Globals.Map.Collide(this);
+            foreach (Tile t in tiles.Where(t => t.Destroyable))
+            {
+                t.Die();
+            }
         }
 
         public void Die()
