@@ -21,8 +21,8 @@ namespace bomber
         private float gravity = 0.3f;
         private float throwVelocity = 8.0f;
         private int time;
-        private float restitution = 0.6f;
-        private float friction = 0.8f;
+        private float restitution = 0.5f;
+        private float friction = 0.7f;
 
         public Bomb(Texture2D texture, Rectangle box) : base(texture, box)
         {
