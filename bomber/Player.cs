@@ -23,8 +23,15 @@ namespace bomber
         private float jumpVelocity = 5.0f;
         private Boolean jumping = false;
 
-        public Player(Texture2D texture, Rectangle box) : base(texture, box)
+        private int bombCooldown = 0;
+        private int bombHold = 0;
+        private int bombHoldMax = 500;
+
+        private Dictionary<string, Keys> controls;
+
+        public Player(Texture2D texture, Rectangle box, Dictionary<string, Keys> controls) : base(texture, box)
         {
+            this.controls = controls;
         }
 
         public void WalkLeft()
@@ -81,6 +88,39 @@ namespace bomber
                 }
                 Box.Y = Globals.WrappedY(Box.Y);
                 vy = 0;
+            }
+
+            bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
+            if (bombCooldown < 0)
+                bombCooldown = 0;
+            KeyboardState kbs = Keyboard.GetState();
+            if (kbs.IsKeyDown(controls["right"]))
+            {
+                WalkRight();
+            }
+            if (kbs.IsKeyDown(controls["left"]))
+            {
+                WalkLeft();
+            }
+            if (kbs.IsKeyDown(controls["jump"]))
+            {
+                Jump();
+            }
+            if (kbs.IsKeyDown(controls["bomb"]) && bombCooldown == 0)
+            {
+                bombHold += gameTime.ElapsedGameTime.Milliseconds;
+                if (bombHold > bombHoldMax)
+                    bombHold = bombHoldMax;
+                //Console.WriteLine(bombHold);
+            }
+            if (kbs.IsKeyUp(controls["bomb"]) && bombHold > 0)
+            {
+                Bomb b = new Bomb(Box);
+                float throwPower = (float)bombHold / (float)bombHoldMax;
+                b.Throw(throwPower, Direction);
+                //Console.WriteLine(throwPower);
+                bombCooldown = 200;
+                bombHold = 0;
             }
         }
     }

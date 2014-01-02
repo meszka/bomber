@@ -43,9 +43,7 @@ namespace bomber
 
         private GraphicsDeviceManager graphics;
         private Player player;
-        private int bombCooldown = 0;
-        private int bombHold = 0;
-        private int bombHoldMax = 500;
+        private Player player2;
         //private Boolean resized = false;
 
         public Game1()
@@ -80,7 +78,24 @@ namespace bomber
             // Create a new SpriteBatch, which can be used to draw textures.
             Globals.Batch = new SpriteBatch(GraphicsDevice);
 
-            player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16));
+            Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
+                {"left", Keys.Left},
+                {"right", Keys.Right},
+                {"jump", Keys.Up},
+                {"bomb", Keys.Down},
+            };
+
+            player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16), playerControls);
+
+            Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
+                {"left", Keys.A},
+                {"right", Keys.D},
+                {"jump", Keys.W},
+                {"bomb", Keys.S},
+            };
+
+            player2 = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(200, 5, 16, 16), player2Controls);
+
             Globals.Map = new TileMap(20, 15);
             /*
             Globals.Map.LoadMap(new int[,] {
@@ -141,38 +156,7 @@ namespace bomber
             }
             */
 
-            bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
-            if (bombCooldown < 0)
-                bombCooldown = 0;
-            KeyboardState kbs = Keyboard.GetState();
-            if (kbs.IsKeyDown(Keys.Right))
-            {
-                player.WalkRight();
-            }
-            if (kbs.IsKeyDown(Keys.Left))
-            {
-                player.WalkLeft();
-            }
-            if (kbs.IsKeyDown(Keys.Z))
-            {
-                player.Jump();
-            }
-            if (kbs.IsKeyDown(Keys.X) && bombCooldown == 0)
-            {
-                bombHold += gameTime.ElapsedGameTime.Milliseconds;
-                if (bombHold > bombHoldMax)
-                    bombHold = bombHoldMax;
-                //Console.WriteLine(bombHold);
-            }
-            if (kbs.IsKeyUp(Keys.X) && bombHold > 0)
-            {
-                Bomb b = new Bomb(player.Box);
-                float throwPower = (float)bombHold / (float)bombHoldMax;
-                b.Throw(throwPower, player.Direction);
-                //Console.WriteLine(throwPower);
-                bombCooldown = 200;
-                bombHold = 0;
-            }
+
 
             Sprite.UpdateAll(gameTime);
             Globals.Map.Update();
