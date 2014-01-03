@@ -46,7 +46,7 @@ namespace bomber
         {
             if (vy > 0)
             {
-                Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight;
+                Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight + (Globals.TileHeight - Box.Height);
             }
             else
             {
@@ -62,11 +62,11 @@ namespace bomber
         {
             if (vx > 0)
             {
-                Box.X = (Box.X / Globals.TileHeight) * Globals.TileHeight;
+                Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth + (Globals.TileWidth - Box.Width);
             }
             else
             {
-                Box.X = ((Box.X / Globals.TileHeight) + 1) * Globals.TileHeight;
+                Box.X = ((Globals.WrappedX(Box.X) / Globals.TileWidth) + 1) * Globals.TileWidth;
             }
             Box.X = Globals.WrappedX(Box.X);
             vx = -vx * restitution;

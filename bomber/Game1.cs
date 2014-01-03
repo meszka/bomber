@@ -85,7 +85,7 @@ namespace bomber
                 {"bomb", Keys.Down},
             };
 
-            player = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(100, 5, 16, 16), playerControls);
+            player = new Player(Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls);
 
             Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
                 {"left", Keys.A},
@@ -94,7 +94,7 @@ namespace bomber
                 {"bomb", Keys.S},
             };
 
-            player2 = new Player(Content.Load<Texture2D>("Textures/player.png"), new Rectangle(200, 5, 16, 16), player2Controls);
+            player2 = new Player(Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls);
 
             Globals.Map = new TileMap(20, 15);
             /*
@@ -128,10 +128,10 @@ namespace bomber
                 {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2},
                 {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 2, 2, 2, 0, 2, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1},
-                {1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+                {1, 2, 1, 0, 1, 0, 0, 0, 0, 2, 0, 2, 2, 0, 2, 2, 2, 0, 2, 1},
+                {1, 2, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 1},
+                {1, 1, 0, 0, 0, 1, 0, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 1},
+                {1, 0, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
             });
 
@@ -160,6 +160,7 @@ namespace bomber
 
             Sprite.UpdateAll(gameTime);
             Globals.Map.Update();
+            Explosion.CleanUp();
 
             // TODO: Add your update logic here			
             base.Update(gameTime);
@@ -177,7 +178,7 @@ namespace bomber
 
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
             Sprite.DrawAll();
-            Globals.Map.Draw();
+            //Globals.Map.Draw();
             Globals.Batch.End();
         }
     }

@@ -17,10 +17,13 @@ namespace bomber
     {
         private int time;
 
+        public static List<Explosion> ExplosionList = new List<Explosion>();
+
         public Explosion(Rectangle box) :
             base (Globals.Content.Load<Texture2D>("Textures/explosion.png"), box)
         {
             time = 500;
+            ExplosionList.Add(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -44,6 +47,11 @@ namespace bomber
         public void Die()
         {
             Dead = true;
+        }
+
+        public static void CleanUp()
+        {
+            ExplosionList.RemoveAll(s => s.Dead);
         }
     }
 }

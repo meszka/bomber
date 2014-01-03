@@ -40,7 +40,7 @@ namespace bomber
             Box.X -= (int) vx;
             if (Globals.Map.Collide(this).Any())
             {
-                Box.X = ((Box.X / Globals.TileWidth) + 1) * Globals.TileWidth;
+                Box.X = ((Globals.WrappedX(Box.X) / Globals.TileWidth) + 1) * Globals.TileWidth;
             }
             Box.X = Globals.WrappedX(Box.X);
         }
@@ -51,7 +51,7 @@ namespace bomber
             Box.X += (int)vx;
             if (Globals.Map.Collide(this).Any())
             {
-                Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth;
+                Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth + (Globals.TileWidth - Box.Width);
             }
             Box.X = Globals.WrappedX(Box.X);
         }
@@ -79,7 +79,7 @@ namespace bomber
             {
                 if (vy > 0)
                 {
-                    Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight;
+                    Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight + (Globals.TileHeight - Box.Height);
                     jumping = false;
                 }
                 else
@@ -88,6 +88,14 @@ namespace bomber
                 }
                 Box.Y = Globals.WrappedY(Box.Y);
                 vy = 0;
+            }
+
+            foreach (Explosion e in Explosion.ExplosionList)
+            {
+                if (Collides(e))
+                {
+                    Dead = true;
+                }
             }
 
             bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
