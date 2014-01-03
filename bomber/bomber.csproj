@@ -48,6 +48,7 @@
     <Compile Include="TileMap.cs" />
     <Compile Include="Bomb.cs" />
     <Compile Include="Explosion.cs" />
+    <Compile Include="BitmapFont.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Textures\brick.gif">
@@ -86,6 +87,10 @@
     <None Include="Content\Textures\player_small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\Textures\c64_font.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Textures\pixelfont.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />

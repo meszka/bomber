@@ -31,7 +31,7 @@ namespace bomber
 
         private Dictionary<string, Keys> controls;
 
-        public Player(int id, Texture2D texture, Rectangle box, Dictionary<string, Keys> controls) : base(texture, box)
+        public Player(int id, Texture2D texture, Rectangle box, Dictionary<string, Keys> controls, Color? color = null) : base(texture, box, color)
         {
             this.Id = id;
             this.controls = controls;

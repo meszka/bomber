@@ -49,6 +49,8 @@ namespace bomber
         private List<Player> playerList = new List<Player>();
         private int[] score = new int[4] {0, 0, 0, 0};
 
+        private BitmapFont font;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -80,6 +82,8 @@ namespace bomber
             // Create a new SpriteBatch, which can be used to draw textures.
             Globals.Batch = new SpriteBatch(GraphicsDevice);
 
+            font = new BitmapFont(Content.Load<Texture2D>("Textures/c64_font.png"), 8, 10);
+
             Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
                 {"left", Keys.Left},
                 {"right", Keys.Right},
@@ -87,7 +91,7 @@ namespace bomber
                 {"bomb", Keys.Down},
             };
 
-            player = new Player(0, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls);
+            player = new Player(0, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls, Color.PeachPuff);
             playerList.Add(player);
 
             Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
@@ -97,7 +101,7 @@ namespace bomber
                 {"bomb", Keys.S},
             };
 
-            player2 = new Player(1, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls);
+            player2 = new Player(1, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls, Color.LightBlue);
             playerList.Add(player2);
 
             Globals.Map = new TileMap(20, 15);
@@ -174,6 +178,10 @@ namespace bomber
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
             Sprite.DrawAll();
             //Globals.Map.Draw();
+
+            font.DrawString(score[0].ToString(), 16, 16, Color.Red, 2);
+            font.DrawString(score[1].ToString(), 280, 16, Color.Blue, 2);
+
             Globals.Batch.End();
         }
     }
