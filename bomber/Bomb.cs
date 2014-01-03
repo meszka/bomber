@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework.Content;
 
 namespace bomber
 {
+    public enum BombTypes {Bomb, FloatingBomb, StickyBomb};
+
     public class Bomb : Sprite
     {
         protected float vy = 0.0f;
@@ -24,10 +26,13 @@ namespace bomber
         protected float restitution = 0.5f;
         protected float friction = 0.7f;
 
+        public static List<Bomb> BombList = new List<Bomb>();
+
         public Bomb(Rectangle box) :
             base(Globals.Content.Load<Texture2D>("Textures/bomb.png"), box)
         {
             time = 1500;
+            BombList.Add(this);
         }
 
         protected void handleDeath(GameTime gameTime)
@@ -111,6 +116,43 @@ namespace bomber
             }
         }
 
+        /*
+        public int Push(int dx)
+        {
+            int oldX = Box.X;
+            Box.X += dx;
+
+            if (Globals.Map.Collide(this).Any())
+            {
+                if (dx < 0)
+                {
+                    Box.X = ((Globals.WrappedX(Box.X) / Globals.TileWidth) + 1) * Globals.TileWidth;
+                }
+                else
+                {
+                    Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth + (Globals.TileWidth - Box.Width);
+                }
+            }
+            Box.X = Globals.WrappedX(Box.X);
+            int diff = Globals.WrappedX(Box.X - oldX);
+            if (diff > Globals.Width / 2)
+            {
+                return diff - Globals.Width;
+            }
+            else
+            {
+                return diff;
+            }
+        }
+        */
+
+        public void Push(float pushPower, int direction)
+        {
+            float angle = 30;
+            vx = throwVelocity * pushPower * (float)Math.Cos(Math.PI/180*angle) * direction;
+            vy = -throwVelocity * pushPower * (float)Math.Sin(Math.PI/180*angle);
+        }
+
         public void Throw(float throwPower, int direction)
         {
             float angle = 55;
@@ -126,6 +168,11 @@ namespace bomber
         public override void AfterDeath()
         {
             new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
+        }
+
+        public static void CleanUp()
+        {
+            BombList.RemoveAll(b => b.Dead);
         }
 
     }

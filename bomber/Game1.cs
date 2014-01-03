@@ -150,6 +150,7 @@ namespace bomber
             Sprite.UpdateAll(gameTime);
             Globals.Map.Update();
             Explosion.CleanUp();
+            Bomb.CleanUp();
 
             playerList.RemoveAll(p => p.Dead);
             if (playerList.Count == 1)
@@ -179,8 +180,8 @@ namespace bomber
             Sprite.DrawAll();
             //Globals.Map.Draw();
 
-            font.DrawString(score[0].ToString(), 16, 16, Color.Red, 2);
-            font.DrawString(score[1].ToString(), 280, 16, Color.Blue, 2);
+            font.DrawString(score[0].ToString(), 20, 10, Color.Red, 2);
+            font.DrawString(score[1].ToString(), 280, 10, Color.Blue, 2);
 
             Globals.Batch.End();
         }

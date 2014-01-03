@@ -27,6 +27,8 @@ namespace bomber
         private int bombHold = 0;
         private int bombHoldMax = 500;
 
+        private BombTypes bombType = BombTypes.Bomb;
+
         public int Id;
 
         private Dictionary<string, Keys> controls;
@@ -66,6 +68,22 @@ namespace bomber
                 vy = -jumpVelocity;
                 jumping = true;
             }
+        }
+
+        public int PushBombs()
+        {
+            int pushed = 0;
+            foreach (Bomb b in Bomb.BombList)
+            {
+                Rectangle intersection = Rectangle.Intersect(Box, b.Box);
+                //int sign = intersection.Location.X > Box.X ? 1 : -1;
+                if (intersection.Width > 0)
+                {
+                    b.Push(0.4f, Direction);
+                    pushed += 1;
+                }
+            }
+            return pushed;
         }
 
         public override void Update(GameTime gameTime)
@@ -117,6 +135,10 @@ namespace bomber
             {
                 Jump();
             }
+            if (kbs.IsKeyDown(Keys.Q))
+            {
+                bombType = (BombTypes)(((int)bombType + 1) % Enum.GetValues(typeof(BombTypes)).GetLength(0));
+            }
             if (kbs.IsKeyDown(controls["bomb"]) && bombCooldown == 0)
             {
                 bombHold += gameTime.ElapsedGameTime.Milliseconds;
@@ -126,9 +148,26 @@ namespace bomber
             }
             if (kbs.IsKeyUp(controls["bomb"]) && bombHold > 0)
             {
-                Bomb b = new Bomb(Box);
-                float throwPower = (float)bombHold / (float)bombHoldMax;
-                b.Throw(throwPower, Direction);
+                if (PushBombs() == 0)
+                {
+                    Bomb b;
+                    float throwPower = (float)bombHold / (float)bombHoldMax;
+                    if (bombType == BombTypes.Bomb)
+                    {
+                        b = new Bomb(Box);
+                        b.Throw(throwPower, Direction);
+                    }
+                    else if (bombType == BombTypes.FloatingBomb)
+                    {
+                       b = new FloatingBomb(Box);
+                       b.Throw(throwPower, Direction);
+                    }
+                    else if (bombType == BombTypes.StickyBomb)
+                    {
+                        b = new StickyBomb(Box);
+                        b.Throw(throwPower, Direction);
+                    }
+                }
                 //Console.WriteLine(throwPower);
                 bombCooldown = 200;
                 bombHold = 0;
