@@ -46,6 +46,9 @@ namespace bomber
         private Player player2;
         //private Boolean resized = false;
 
+        private List<Player> playerList = new List<Player>();
+        private int[] score = new int[4] {0, 0, 0, 0};
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -65,7 +68,6 @@ namespace bomber
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             base.Initialize();
         }
 
@@ -85,7 +87,8 @@ namespace bomber
                 {"bomb", Keys.Down},
             };
 
-            player = new Player(Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls);
+            player = new Player(0, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls);
+            playerList.Add(player);
 
             Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
                 {"left", Keys.A},
@@ -94,28 +97,10 @@ namespace bomber
                 {"bomb", Keys.S},
             };
 
-            player2 = new Player(Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls);
+            player2 = new Player(1, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls);
+            playerList.Add(player2);
 
             Globals.Map = new TileMap(20, 15);
-            /*
-            Globals.Map.LoadMap(new int[,] {
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {1, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
-                });
-                */
 
             Globals.Map.LoadMap(new int[,] {
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -161,6 +146,16 @@ namespace bomber
             Sprite.UpdateAll(gameTime);
             Globals.Map.Update();
             Explosion.CleanUp();
+
+            playerList.RemoveAll(p => p.Dead);
+            if (playerList.Count == 1)
+            {
+                score[playerList[0].Id] += 1;
+                Sprite.SpriteList.Clear();
+                Explosion.ExplosionList.Clear();
+                playerList.Clear();
+                LoadContent();
+            }
 
             // TODO: Add your update logic here			
             base.Update(gameTime);
