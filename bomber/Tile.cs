@@ -43,7 +43,7 @@ namespace bomber
         public override void AfterDeath()
         {
             double r = Globals.random.NextDouble();
-            Console.WriteLine(r);
+            //Console.WriteLine(r);
             if (r < 0.1)
             {
                 Powerup.SpawnRandom(new Rectangle(Box.X + 1, Box.Y + 1, 13, 13));

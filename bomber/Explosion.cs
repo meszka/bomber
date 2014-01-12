@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 #endregion
 
@@ -16,6 +17,7 @@ namespace bomber
     public class Explosion : Sprite
     {
         private int time;
+        private SoundEffect sound;
 
         public static List<Explosion> ExplosionList = new List<Explosion>();
 
@@ -24,6 +26,8 @@ namespace bomber
         {
             time = 500;
             ExplosionList.Add(this);
+            sound = Globals.Content.Load<SoundEffect>("Sounds/explosion.wav");
+            sound.Play();
         }
 
         public override void Update(GameTime gameTime)

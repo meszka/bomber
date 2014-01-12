@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 #endregion
 
@@ -26,12 +27,15 @@ namespace bomber
         protected float restitution = 0.5f;
         protected float friction = 0.7f;
 
+        protected SoundEffect bounceSound;
+
         public static List<Bomb> BombList = new List<Bomb>();
 
         public Bomb(Rectangle box) :
             base(Globals.Content.Load<Texture2D>("Textures/bomb.png"), box)
         {
             time = 1500;
+            bounceSound = Globals.Content.Load<SoundEffect>("Sounds/bounce.wav");
             BombList.Add(this);
         }
 
@@ -45,6 +49,13 @@ namespace bomber
 
         protected void handleYCollision()
         {
+            if (Math.Abs(vy) > 2)
+            {
+                SoundEffectInstance b = bounceSound.CreateInstance();
+                b.Volume = Math.Abs(vy) / maxV;
+                b.Play();
+            }
+
             if (vy > 0)
             {
                 Box.Y = (Box.Y / Globals.TileHeight) * Globals.TileHeight + (Globals.TileHeight - Box.Height);
@@ -61,6 +72,13 @@ namespace bomber
 
         protected void handleXCollision()
         {
+            if (Math.Abs(vx) > 2)
+            {
+                SoundEffectInstance b = bounceSound.CreateInstance();
+                b.Volume = Math.Abs(vx) / (maxV / 2);
+                b.Play();
+            }
+
             if (vx > 0)
             {
                 Box.X = (Box.X / Globals.TileWidth) * Globals.TileWidth + (Globals.TileWidth - Box.Width);
