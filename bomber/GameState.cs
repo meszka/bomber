@@ -20,6 +20,10 @@ namespace bomber
         void Draw();
     }
 
+    public class Menu : GameState
+    {
+    }
+
     public class MainGame : GameState
     {
         private Player player;

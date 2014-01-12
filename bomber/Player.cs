@@ -91,7 +91,7 @@ namespace bomber
                 //int sign = intersection.Location.X > Box.X ? 1 : -1;
                 if (intersection.Width > 0)
                 {
-                    b.Push(0.4f, Direction);
+                    b.Push(0.4f * ThrowModifier, Direction);
                     pushed += 1;
                 }
             }
