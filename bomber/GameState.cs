@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,13 +16,49 @@ namespace bomber
 {
     public interface GameState
     {
-        void Initialize();
         void Update(GameTime gameTime);
         void Draw();
     }
 
     public class Menu : GameState
     {
+        private List<string> maps;
+        private int cursor = 0;
+        private KeyboardState oldKbs;
+
+        public Menu()
+        {
+            maps = new List<string>();
+            DirectoryInfo d = new DirectoryInfo("Content/Maps");
+            FileInfo[] files = d.GetFiles("*.txt");
+            foreach (FileInfo f in files)
+            {
+                maps.Add(f.Name.Split('.')[0]);
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            KeyboardState kbs = Keyboard.GetState();
+            if (oldKbs.IsKeyDown(Keys.Right) && kbs.IsKeyUp(Keys.Right))
+            {
+                cursor = (cursor + 1) % maps.Count;
+            }
+            if (oldKbs.IsKeyDown(Keys.Left) && kbs.IsKeyUp(Keys.Left))
+            {
+                cursor = (cursor + maps.Count - 1) % maps.Count;
+            }
+            if (oldKbs.IsKeyDown(Keys.Enter) && kbs.IsKeyUp(Keys.Enter))
+            {
+                Globals.SetState(new MainGame(maps[cursor]));
+            }
+            oldKbs = kbs;
+        }
+
+        public void Draw()
+        {
+            Globals.Font.DrawString("< " + maps[cursor] + " >", 100, 100, Color.White, 2);
+        }
     }
 
     public class MainGame : GameState
@@ -34,9 +71,12 @@ namespace bomber
         private int scoreDelay = 0;
         private Player winner = null;
         private int pointsToWin = 3;
+        private string mapName;
 
-        public MainGame()
+        public MainGame(string map)
         {
+            mapName = map;
+            Initialize();
         }
 
         public void Initialize()
@@ -46,7 +86,7 @@ namespace bomber
 
             Globals.Map = new TileMap(20, 15);
 
-            string[] lines = System.IO.File.ReadAllLines("Content/map1.txt");
+            string[] lines = System.IO.File.ReadAllLines(string.Format("Content/Maps/{0}.txt", mapName));
             int[,] mapdata = new int[15, 20];
 
             Dictionary<char, int> char2code = new Dictionary<char, int> {{' ', 0}, {'#', 1}, {'%', 2}, {'0', 3}, {'1', 4}};
@@ -87,7 +127,7 @@ namespace bomber
                 {"bomb", Keys.Down},
             };
 
-            player = new Player(0, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[0], playerControls, "red", Color.Red, Color.PeachPuff);
+            player = new Player(0, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[0], playerControls, "red", Color.Maroon, Color.PeachPuff);
             playerList.Add(player);
 
             Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
@@ -97,7 +137,7 @@ namespace bomber
                 {"bomb", Keys.S},
             };
 
-            player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[1], player2Controls, "blue", Color.Blue, Color.LightBlue);
+            player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[1], player2Controls, "blue", Color.Navy, Color.LightBlue);
             playerList.Add(player2);
         }
 
@@ -147,8 +187,8 @@ namespace bomber
         {
             Sprite.DrawAll();
 
-            Globals.Font.DrawString(score[0].ToString(), 20, 10, Color.Red, 2);
-            Globals.Font.DrawString(score[1].ToString(), 280, 10, Color.Blue, 2);
+            Globals.Font.DrawString(score[0].ToString(), 20, 10, Color.Maroon, 2);
+            Globals.Font.DrawString(score[1].ToString(), 280, 10, Color.Navy, 2);
 
             if (scored)
             {
@@ -173,16 +213,12 @@ namespace bomber
             this.winner = winner;
         }
 
-        public void Initialize()
-        {
-        }
-
         public void Update(GameTime gameTime)
         {   
             KeyboardState kbs = Keyboard.GetState();
             if (kbs.IsKeyDown(Keys.Space))
             {
-                Globals.SetState(new MainGame());
+                Globals.SetState(new Menu());
             }
         }
 

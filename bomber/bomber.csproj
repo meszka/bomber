@@ -143,7 +143,10 @@
     <None Include="Content\Textures\throw_powerup.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Content\map1.txt">
+    <None Include="Content\Maps\map1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Maps\map2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -151,6 +154,7 @@
     <Folder Include="Content\" />
     <Folder Include="Content\Textures\" />
     <Folder Include="Content\Sounds\" />
+    <Folder Include="Content\Maps\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

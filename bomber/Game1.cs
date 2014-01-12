@@ -58,7 +58,6 @@ namespace bomber
         public static void SetState(GameState state)
         {
             CurrentState = state;
-            state.Initialize();
         }
     }
      
@@ -91,7 +90,8 @@ namespace bomber
         {
             Globals.random = new Random();
             base.Initialize();
-            Globals.SetState(new MainGame());
+            //Globals.SetState(new MainGame());
+            Globals.SetState(new Menu());
         }
 
         /// <summary>
