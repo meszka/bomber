@@ -132,9 +132,6 @@ namespace bomber
                 }
             }
 
-            bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
-            if (bombCooldown < 0)
-                bombCooldown = 0;
             Globals.HandleTimer(ref bombCooldown, gameTime);
 
             KeyboardState kbs = Keyboard.GetState();

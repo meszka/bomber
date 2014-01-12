@@ -17,6 +17,7 @@ namespace bomber
     {
         public static SpriteBatch Batch;
         public static ContentManager Content;
+        public static GraphicsDeviceManager Graphics;
         public static TileMap Map;
         public const int TileWidth = 16;
         public const int TileHeight = 16;
@@ -25,6 +26,8 @@ namespace bomber
 
         public static Random random;
         public static BitmapFont Font;
+
+        public static GameState CurrentState;
 
         public static int WrappedY(int y)
         {
@@ -51,6 +54,12 @@ namespace bomber
                 }
             }
         }
+
+        public static void SetState(GameState state)
+        {
+            CurrentState = state;
+            state.Initialize();
+        }
     }
      
 	/// <summary>
@@ -59,13 +68,11 @@ namespace bomber
     public class Game1 : Game
     {
         public const int Scale = 2;
-        private GraphicsDeviceManager graphics;
-        private GameState currentState;
         //private Boolean resized = false;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Globals.Graphics = new GraphicsDeviceManager(this);
             Globals.Content = Content;
             Globals.Content.RootDirectory = "Content";
 
@@ -84,8 +91,7 @@ namespace bomber
         {
             Globals.random = new Random();
             base.Initialize();
-            currentState = new MainGame();
-            currentState.Initialize();
+            Globals.SetState(new MainGame());
         }
 
         /// <summary>
@@ -118,7 +124,7 @@ namespace bomber
             }
             */
 
-            currentState.Update(gameTime);	
+            Globals.CurrentState.Update(gameTime);	
             base.Update(gameTime);
         }
 
@@ -128,10 +134,10 @@ namespace bomber
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
+            Globals.Graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
             base.Draw(gameTime);
             Globals.Batch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Scale));
-            currentState.Draw();
+            Globals.CurrentState.Draw();
             Globals.Batch.End();
         }
     }

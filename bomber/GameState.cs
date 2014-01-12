@@ -29,7 +29,7 @@ namespace bomber
         private bool scored = false;
         private int scoreDelay = 0;
         private Player winner = null;
-        private int pointsToWin = 5;
+        private int pointsToWin = 3;
 
         public MainGame()
         {
@@ -37,6 +37,9 @@ namespace bomber
 
         public void Initialize()
         {
+            winner = null;
+            scored = false;
+
             Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
                 {"left", Keys.Left},
                 {"right", Keys.Right},
@@ -99,15 +102,24 @@ namespace bomber
                 scoreDelay = 2000;
                 scored = true;
             }
+
+            if (playerList.Count == 0 && !scored)
+            {
+                scoreDelay = 2000;
+                scored = true;
+            }
         }
 
         private void Restart()
         {
-            winner = null;
-            scored = false;
             Sprite.SpriteList.Clear();
             Explosion.ExplosionList.Clear();
             playerList.Clear();
+            if (winner != null && score[winner.Id] == pointsToWin)
+            {
+                Globals.SetState(new WinnerState(winner));
+                return;
+            }
             Initialize();
         }
 
@@ -120,8 +132,44 @@ namespace bomber
 
             if (scored)
             {
-                Globals.Font.DrawString(string.Format("{0} player scores!", winner.ColorName), 10, 200, winner.TextColor, 2);
+                if (winner != null)
+                {
+                    Globals.Font.DrawString(string.Format("{0} player scores!", winner.ColorName.PadLeft(4)), 12, 100, winner.TextColor, 2);
+                }
+                else
+                {
+                    Globals.Font.DrawString("   It's a draw...", 12, 100, Color.White, 2);
+                }
             }
+        }
+    }
+
+    public class WinnerState: GameState
+    {
+        private Player winner;
+
+        public WinnerState(Player winner)
+        {
+            this.winner = winner;
+        }
+
+        public void Initialize()
+        {
+        }
+
+        public void Update(GameTime gameTime)
+        {   
+            KeyboardState kbs = Keyboard.GetState();
+            if (kbs.IsKeyDown(Keys.Space))
+            {
+                Globals.SetState(new MainGame());
+            }
+        }
+
+        public void Draw()
+        {
+            //Globals.Graphics.GraphicsDevice.Clear(Color.Black);
+            Globals.Font.DrawString(string.Format("{0} player wins!", winner.ColorName.PadLeft(4)), 12, 100, winner.TextColor, 2);
         }
     }
 }
