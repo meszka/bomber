@@ -212,6 +212,7 @@ namespace bomber
         public FloatingBomb(Rectangle box) : base(box)
         {
             this.texture = Globals.Content.Load<Texture2D>("Textures/floating_bomb.png");
+            this.gravity = 0.2f;
         }
 
         protected void handleGravityFloaty()
