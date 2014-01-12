@@ -23,6 +23,9 @@ namespace bomber
     public class Menu : GameState
     {
         private List<string> maps;
+        private int pointsToWin = 5;
+        private const int maxPoints = 9;
+        private const int minPoints = 1;
         private int cursor = 0;
         private KeyboardState oldKbs;
 
@@ -39,6 +42,8 @@ namespace bomber
 
         public void Update(GameTime gameTime)
         {
+            int pointMod = maxPoints - minPoints + 1;
+
             KeyboardState kbs = Keyboard.GetState();
             if (oldKbs.IsKeyDown(Keys.Right) && kbs.IsKeyUp(Keys.Right))
             {
@@ -48,16 +53,26 @@ namespace bomber
             {
                 cursor = (cursor + maps.Count - 1) % maps.Count;
             }
+            if (oldKbs.IsKeyDown(Keys.Up) && kbs.IsKeyUp(Keys.Up))
+            {
+                pointsToWin = (pointsToWin - minPoints + 1) % pointMod + minPoints;
+            }
+            if (oldKbs.IsKeyDown(Keys.Down) && kbs.IsKeyUp(Keys.Down))
+            {
+                pointsToWin = (pointsToWin - minPoints + pointMod - 1) % pointMod + minPoints;
+            }
             if (oldKbs.IsKeyDown(Keys.Enter) && kbs.IsKeyUp(Keys.Enter))
             {
-                Globals.SetState(new MainGame(maps[cursor]));
+                Globals.SetState(new MainGame(maps[cursor], pointsToWin));
             }
             oldKbs = kbs;
         }
 
         public void Draw()
         {
-            Globals.Font.DrawString("< " + maps[cursor] + " >", 100, 100, Color.White, 2);
+            Globals.Font.DrawString("map: < " + maps[cursor] + " >", 10, 60, Color.White, 2);
+            Globals.Font.DrawString("pts to win: \\ " + pointsToWin.ToString() + " ^", 10, 100, Color.White, 2);
+            Globals.Font.DrawString("enter to start", 10, 140, Color.White, 2);
         }
     }
 
@@ -73,9 +88,10 @@ namespace bomber
         private int pointsToWin = 3;
         private string mapName;
 
-        public MainGame(string map)
+        public MainGame(string map, int pointsToWin)
         {
             mapName = map;
+            this.pointsToWin = pointsToWin;
             Initialize();
         }
 
