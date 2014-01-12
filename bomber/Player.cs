@@ -156,10 +156,12 @@ namespace bomber
             {
                 Jump();
             }
+            /*
             if (kbs.IsKeyDown(Keys.Q))
             {
                 BombType = (BombTypes)(((int)BombType + 1) % Enum.GetValues(typeof(BombTypes)).GetLength(0));
             }
+            */
             if (kbs.IsKeyDown(controls["bomb"]) && bombCooldown == 0)
             {
                 bombHold += gameTime.ElapsedGameTime.Milliseconds;
