@@ -40,11 +40,7 @@ namespace bomber
             if (Dead)
                 return;
 
-            time -= gameTime.ElapsedGameTime.Milliseconds;
-            if (time < 0)
-                time = 0;
-            if (time == 0)
-                Die();
+            Globals.HandleTimer(ref time, gameTime, Die);
         }
 
         protected void handleYCollision()
@@ -183,6 +179,7 @@ namespace bomber
 
         public StickyBomb(Rectangle box) : base(box)
         {
+            this.texture = Globals.Content.Load<Texture2D>("Textures/sticky_bomb.png");
         }
 
         public override void Update(GameTime gameTime)
@@ -214,6 +211,7 @@ namespace bomber
 
         public FloatingBomb(Rectangle box) : base(box)
         {
+            this.texture = Globals.Content.Load<Texture2D>("Textures/floating_bomb.png");
         }
 
         protected void handleGravityFloaty()

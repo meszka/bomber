@@ -33,7 +33,6 @@ namespace bomber
             foreach (char c in s)
             {
                 int sourceOffset = (int)(c - ' ') * width;
-                Console.WriteLine(sourceOffset);
                 Globals.Batch.Draw(texture,
                                    new Rectangle(x + destinationOffset, y, width * scale, height * scale),
                                    new Rectangle(sourceOffset, 0, width, height),

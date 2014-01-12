@@ -31,11 +31,7 @@ namespace bomber
             if (Dead)
                 return;
 
-            time -= gameTime.ElapsedGameTime.Milliseconds;
-            if (time < 0)
-                time = 0;
-            if (time == 0)
-                Die();
+            Globals.HandleTimer(ref time, gameTime, Die);
 
             List<Tile> tiles = Globals.Map.Collide(this);
             foreach (Tile t in tiles.Where(t => t.Destroyable))

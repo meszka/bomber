@@ -23,6 +23,8 @@ namespace bomber
         public const int Width = 320;
         public const int Height = 240;
 
+        public static Random random;
+
         public static int WrappedY(int y)
         {
             return (y + Height) % Height;
@@ -31,6 +33,22 @@ namespace bomber
         public static int WrappedX(int x)
         {
             return (x + Width) % Width;
+        }
+
+        public static void HandleTimer(ref int counter, GameTime gameTime, Action action = null)
+        {
+            counter -= gameTime.ElapsedGameTime.Milliseconds;
+            if (counter < 0)
+            {
+                counter = 0;
+            }
+            if (counter == 0)
+            {
+                if (action != null)
+                {
+                    action();
+                }
+            }
         }
     }
 
@@ -48,6 +66,10 @@ namespace bomber
 
         private List<Player> playerList = new List<Player>();
         private int[] score = new int[4] {0, 0, 0, 0};
+        private bool scored = false;
+        private int scoreDelay = 0;
+        private Player winner = null;
+        private int pointsToWin = 5;
 
         private BitmapFont font;
 
@@ -70,6 +92,7 @@ namespace bomber
         /// </summary>
         protected override void Initialize()
         {
+            Globals.random = new Random();
             base.Initialize();
         }
 
@@ -91,7 +114,7 @@ namespace bomber
                 {"bomb", Keys.Down},
             };
 
-            player = new Player(0, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls, Color.PeachPuff);
+            player = new Player(0, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls, "red", Color.Red, Color.PeachPuff);
             playerList.Add(player);
 
             Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
@@ -101,7 +124,7 @@ namespace bomber
                 {"bomb", Keys.S},
             };
 
-            player2 = new Player(1, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls, Color.LightBlue);
+            player2 = new Player(1, Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls, "blue", Color.Blue, Color.LightBlue);
             playerList.Add(player2);
 
             Globals.Map = new TileMap(20, 15);
@@ -145,25 +168,38 @@ namespace bomber
             }
             */
 
-
+            if (scored)
+            {
+                Globals.HandleTimer(ref scoreDelay, gameTime, Restart);
+            }
 
             Sprite.UpdateAll(gameTime);
             Globals.Map.Update();
             Explosion.CleanUp();
             Bomb.CleanUp();
+            Powerup.CleanUp();
 
             playerList.RemoveAll(p => p.Dead);
-            if (playerList.Count == 1)
+            if (playerList.Count == 1 && !scored)
             {
-                score[playerList[0].Id] += 1;
-                Sprite.SpriteList.Clear();
-                Explosion.ExplosionList.Clear();
-                playerList.Clear();
-                LoadContent();
+                winner = playerList[0];
+                score[winner.Id] += 1;
+                scoreDelay = 2000;
+                scored = true;
             }
 
             // TODO: Add your update logic here			
             base.Update(gameTime);
+        }
+
+        private void Restart()
+        {
+            winner = null;
+            scored = false;
+            Sprite.SpriteList.Clear();
+            Explosion.ExplosionList.Clear();
+            playerList.Clear();
+            LoadContent();
         }
 
         /// <summary>
@@ -182,6 +218,11 @@ namespace bomber
 
             font.DrawString(score[0].ToString(), 20, 10, Color.Red, 2);
             font.DrawString(score[1].ToString(), 280, 10, Color.Blue, 2);
+
+            if (scored)
+            {
+                font.DrawString(string.Format("{0} player scores!", winner.ColorName), 10, 200, winner.TextColor, 2);
+            }
 
             Globals.Batch.End();
         }

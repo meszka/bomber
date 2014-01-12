@@ -27,16 +27,20 @@ namespace bomber
         private int bombHold = 0;
         private int bombHoldMax = 500;
 
-        private BombTypes bombType = BombTypes.Bomb;
+        public BombTypes BombType = BombTypes.Bomb;
 
         public int Id;
+        public Color TextColor;
+        public string ColorName;
 
         private Dictionary<string, Keys> controls;
 
-        public Player(int id, Texture2D texture, Rectangle box, Dictionary<string, Keys> controls, Color? color = null) : base(texture, box, color)
+        public Player(int id, Texture2D texture, Rectangle box, Dictionary<string, Keys> controls, string colorName, Color textColor, Color? color = null) : base(texture, box, color)
         {
             this.Id = id;
             this.controls = controls;
+            this.ColorName = colorName;
+            this.TextColor = textColor;
         }
 
         public void WalkLeft()
@@ -119,9 +123,20 @@ namespace bomber
                 }
             }
 
+            foreach (Powerup p in Powerup.PowerupList)
+            {
+                if (Collides(p))
+                {
+                    p.Effect(this);
+                    p.Dead = true;
+                }
+            }
+
             bombCooldown -= gameTime.ElapsedGameTime.Milliseconds;
             if (bombCooldown < 0)
                 bombCooldown = 0;
+            Globals.HandleTimer(ref bombCooldown, gameTime);
+
             KeyboardState kbs = Keyboard.GetState();
             if (kbs.IsKeyDown(controls["right"]))
             {
@@ -137,7 +152,7 @@ namespace bomber
             }
             if (kbs.IsKeyDown(Keys.Q))
             {
-                bombType = (BombTypes)(((int)bombType + 1) % Enum.GetValues(typeof(BombTypes)).GetLength(0));
+                BombType = (BombTypes)(((int)BombType + 1) % Enum.GetValues(typeof(BombTypes)).GetLength(0));
             }
             if (kbs.IsKeyDown(controls["bomb"]) && bombCooldown == 0)
             {
@@ -152,17 +167,17 @@ namespace bomber
                 {
                     Bomb b;
                     float throwPower = (float)bombHold / (float)bombHoldMax;
-                    if (bombType == BombTypes.Bomb)
+                    if (BombType == BombTypes.Bomb)
                     {
                         b = new Bomb(Box);
                         b.Throw(throwPower, Direction);
                     }
-                    else if (bombType == BombTypes.FloatingBomb)
+                    else if (BombType == BombTypes.FloatingBomb)
                     {
                        b = new FloatingBomb(Box);
                        b.Throw(throwPower, Direction);
                     }
-                    else if (bombType == BombTypes.StickyBomb)
+                    else if (BombType == BombTypes.StickyBomb)
                     {
                         b = new StickyBomb(Box);
                         b.Throw(throwPower, Direction);

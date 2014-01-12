@@ -23,6 +23,7 @@ namespace bomber
 
         protected Texture2D texture;
         protected Color color;
+        public Color Color { get { return color; } }
 
         public Sprite(Texture2D texture, Rectangle box, Color? maybeColor = null)
         {
