@@ -50,6 +50,7 @@
     <Compile Include="Explosion.cs" />
     <Compile Include="BitmapFont.cs" />
     <Compile Include="Powerup.cs" />
+    <Compile Include="GameState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Textures\brick.gif">
