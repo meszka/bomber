@@ -19,6 +19,7 @@ namespace bomber
 
         public int Width;
         public int Height;
+        public Rectangle[] SpawnPoints = new Rectangle[2];
 
         public TileMap(int width, int height)
         {
@@ -44,6 +45,14 @@ namespace bomber
                     else if (map[i, j] == 2)
                     {
                         Tiles[j, i] = new Brick(rect);
+                    }
+                    else if (map[i, j] == 3)
+                    {
+                        SpawnPoints[0] = new Rectangle(rect.X + 1, rect.Y + 1, 13, 13);
+                    }
+                    else if (map[i, j] == 4)
+                    {
+                        SpawnPoints[1] = new Rectangle(rect.X + 1, rect.Y + 1, 13, 13);
                     }
                 }
             }

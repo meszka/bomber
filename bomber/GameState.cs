@@ -40,28 +40,23 @@ namespace bomber
             winner = null;
             scored = false;
 
-            Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
-                {"left", Keys.Left},
-                {"right", Keys.Right},
-                {"jump", Keys.Up},
-                {"bomb", Keys.Down},
-            };
-
-            player = new Player(0, Globals.Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(100, 5, 13, 13), playerControls, "red", Color.Red, Color.PeachPuff);
-            playerList.Add(player);
-
-            Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
-                {"left", Keys.A},
-                {"right", Keys.D},
-                {"jump", Keys.W},
-                {"bomb", Keys.S},
-            };
-
-            player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), new Rectangle(200, 5, 13, 13), player2Controls, "blue", Color.Blue, Color.LightBlue);
-            playerList.Add(player2);
-
             Globals.Map = new TileMap(20, 15);
 
+            string[] lines = System.IO.File.ReadAllLines("Content/map1.txt");
+            int[,] mapdata = new int[15, 20];
+
+            Dictionary<char, int> char2code = new Dictionary<char, int> {{' ', 0}, {'#', 1}, {'%', 2}, {'0', 3}, {'1', 4}};
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                for (int j = 0; j < lines[i].Length; j++)
+                {
+                    mapdata[i, j] = char2code[lines[i][j]];
+                }
+            }
+
+            Globals.Map.LoadMap(mapdata);
+            /*
             Globals.Map.LoadMap(new int[,] {
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -79,6 +74,27 @@ namespace bomber
                 {1, 0, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
             });
+            */
+
+            Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
+                {"left", Keys.Left},
+                {"right", Keys.Right},
+                {"jump", Keys.Up},
+                {"bomb", Keys.Down},
+            };
+
+            player = new Player(0, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[0], playerControls, "red", Color.Red, Color.PeachPuff);
+            playerList.Add(player);
+
+            Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
+                {"left", Keys.A},
+                {"right", Keys.D},
+                {"jump", Keys.W},
+                {"bomb", Keys.S},
+            };
+
+            player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[1], player2Controls, "blue", Color.Blue, Color.LightBlue);
+            playerList.Add(player2);
         }
 
         public void Update(GameTime gameTime)
