@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 #endregion
 
@@ -28,6 +29,8 @@ namespace bomber
         private int bombHoldMax = 500;
 
         public BombTypes BombType = BombTypes.Bomb;
+        public float ThrowModifier = 1.0f;
+        public int ExplosionSize = 32;
 
         public int Id;
         public Color TextColor;
@@ -35,12 +38,17 @@ namespace bomber
 
         private Dictionary<string, Keys> controls;
 
+        private SoundEffect powerupSound;
+        private SoundEffect throwSound;
+
         public Player(int id, Texture2D texture, Rectangle box, Dictionary<string, Keys> controls, string colorName, Color textColor, Color? color = null) : base(texture, box, color)
         {
             this.Id = id;
             this.controls = controls;
             this.ColorName = colorName;
             this.TextColor = textColor;
+            powerupSound = Globals.Content.Load<SoundEffect>("Sounds/powerup.wav");
+            throwSound = Globals.Content.Load<SoundEffect>("Sounds/throw.wav");
         }
 
         public void WalkLeft()
@@ -127,6 +135,7 @@ namespace bomber
             {
                 if (Collides(p))
                 {
+                    powerupSound.Play();
                     p.Effect(this);
                     p.Dead = true;
                 }
@@ -160,23 +169,24 @@ namespace bomber
             }
             if (kbs.IsKeyUp(controls["bomb"]) && bombHold > 0)
             {
+                throwSound.Play();
                 if (PushBombs() == 0)
                 {
                     Bomb b;
-                    float throwPower = (float)bombHold / (float)bombHoldMax;
+                    float throwPower = ThrowModifier * (float)bombHold / (float)bombHoldMax;
                     if (BombType == BombTypes.Bomb)
                     {
-                        b = new Bomb(Box);
+                        b = new Bomb(Box, ExplosionSize);
                         b.Throw(throwPower, Direction);
                     }
                     else if (BombType == BombTypes.FloatingBomb)
                     {
-                       b = new FloatingBomb(Box);
+                       b = new FloatingBomb(Box, ExplosionSize);
                        b.Throw(throwPower, Direction);
                     }
                     else if (BombType == BombTypes.StickyBomb)
                     {
-                        b = new StickyBomb(Box);
+                        b = new StickyBomb(Box, ExplosionSize);
                         b.Throw(throwPower, Direction);
                     }
                 }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 
 #endregion
 
@@ -75,7 +76,7 @@ namespace bomber
 
         public static  void SpawnRandom(Rectangle box)
         {
-            int type = Globals.random.Next(2);
+            int type = Globals.random.Next(4);
 
             if (type == 0)
             {
@@ -84,6 +85,14 @@ namespace bomber
             else if (type == 1)
             {
                 new FloatingPowerup(box);
+            }
+            else if (type == 2)
+            {
+                new ThrowPowerup(box);
+            }
+            else if (type == 3)
+            {
+                new ExplosionPowerup(box);
             }
         }
     }
@@ -113,6 +122,34 @@ namespace bomber
         public override void Effect(Player p)
         {
             p.BombType = BombTypes.FloatingBomb;
+        }
+    }
+
+    public class ThrowPowerup : Powerup
+    {
+        public ThrowPowerup(Rectangle box): base()
+        {
+            this.Box = box;
+            this.texture = Globals.Content.Load<Texture2D>("Textures/throw_powerup.png");
+        }
+
+        public override void Effect(Player p)
+        {
+            p.ThrowModifier = 1.5f;
+        }
+    }
+
+    public class ExplosionPowerup : Powerup
+    {
+        public ExplosionPowerup(Rectangle box): base()
+        {
+            this.Box = box;
+            this.texture = Globals.Content.Load<Texture2D>("Textures/explosion_powerup.png");
+        }
+
+        public override void Effect(Player p)
+        {
+            p.ExplosionSize = 64;
         }
     }
 }

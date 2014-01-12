@@ -28,12 +28,14 @@ namespace bomber
         protected float friction = 0.7f;
 
         protected SoundEffect bounceSound;
+        protected int explosionSize = 16;
 
         public static List<Bomb> BombList = new List<Bomb>();
 
-        public Bomb(Rectangle box) :
+        public Bomb(Rectangle box, int explosionSize) :
             base(Globals.Content.Load<Texture2D>("Textures/bomb.png"), box)
         {
+            this.explosionSize = explosionSize;
             time = 1500;
             bounceSound = Globals.Content.Load<SoundEffect>("Sounds/bounce.wav");
             BombList.Add(this);
@@ -181,7 +183,8 @@ namespace bomber
 
         public override void AfterDeath()
         {
-            new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
+            //new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
+            new Explosion(new Rectangle(Box.Center.X - (explosionSize / 2), Box.Center.Y - (explosionSize / 2), explosionSize, explosionSize));
         }
 
         public static void CleanUp()
@@ -195,7 +198,7 @@ namespace bomber
     {
         private bool stuck = false;
 
-        public StickyBomb(Rectangle box) : base(box)
+        public StickyBomb(Rectangle box, int explosionSize) : base(box, explosionSize)
         {
             this.texture = Globals.Content.Load<Texture2D>("Textures/sticky_bomb.png");
         }
@@ -227,7 +230,7 @@ namespace bomber
     public class FloatingBomb : Bomb
     {
 
-        public FloatingBomb(Rectangle box) : base(box)
+        public FloatingBomb(Rectangle box, int explosionSize) : base(box, explosionSize)
         {
             this.texture = Globals.Content.Load<Texture2D>("Textures/floating_bomb.png");
             this.gravity = 0.2f;

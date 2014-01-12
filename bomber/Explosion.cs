@@ -24,7 +24,7 @@ namespace bomber
         public Explosion(Rectangle box) :
             base (Globals.Content.Load<Texture2D>("Textures/explosion.png"), box)
         {
-            time = 500;
+            time = 200;
             ExplosionList.Add(this);
             sound = Globals.Content.Load<SoundEffect>("Sounds/explosion.wav");
             sound.Play();
