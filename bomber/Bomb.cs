@@ -164,9 +164,14 @@ namespace bomber
 
         public void Push(float pushPower, int direction)
         {
-            float angle = 30;
+            float angle = 35;
+            float oldVy = 0;
+            if (vy > 0)
+            {
+                oldVy = vy;
+            }
             vx = throwVelocity * pushPower * (float)Math.Cos(Math.PI/180*angle) * direction;
-            vy = -throwVelocity * pushPower * (float)Math.Sin(Math.PI/180*angle);
+            vy = -throwVelocity * pushPower * (float)Math.Sin(Math.PI / 180 * angle) - oldVy;
         }
 
         public void Throw(float throwPower, int direction)
