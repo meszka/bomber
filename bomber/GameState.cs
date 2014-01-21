@@ -135,8 +135,15 @@ namespace bomber
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
             });
             */
-
+            
             Dictionary<string, Keys> playerControls = new Dictionary<string, Keys> {
+                {"left", Keys.A},
+                {"right", Keys.D},
+                {"jump", Keys.W},
+                {"bomb", Keys.S},
+            };
+
+            Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
                 {"left", Keys.Left},
                 {"right", Keys.Right},
                 {"jump", Keys.Up},
@@ -145,13 +152,6 @@ namespace bomber
 
             player = new Player(0, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[0], playerControls, "red", Color.Maroon, Color.PeachPuff);
             playerList.Add(player);
-
-            Dictionary<string, Keys> player2Controls = new Dictionary<string, Keys> {
-                {"left", Keys.A},
-                {"right", Keys.D},
-                {"jump", Keys.W},
-                {"bomb", Keys.S},
-            };
 
             player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[1], player2Controls, "blue", Color.Navy, Color.LightBlue);
             playerList.Add(player2);
