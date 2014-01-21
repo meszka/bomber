@@ -154,6 +154,7 @@ namespace bomber
             playerList.Add(player);
 
             player2 = new Player(1, Globals.Content.Load<Texture2D>("Textures/player_small.png"), Globals.Map.SpawnPoints[1], player2Controls, "blue", Color.Navy, Color.LightBlue);
+            player2.Direction = -1;
             playerList.Add(player2);
         }
 
