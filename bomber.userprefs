@@ -1,9 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="bomber/Bomb.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="bomber/GameState.cs">
     <Files>
       <File FileName="bomber/Game1.cs" Line="1" Column="1" />
-      <File FileName="bomber/GameState.cs" Line="1" Column="1" />
+      <File FileName="bomber/GameState.cs" Line="130" Column="44" />
       <File FileName="bomber/Player.cs" Line="94" Column="31" />
       <File FileName="bomber/Bomb.cs" Line="168" Column="29" />
       <File FileName="bomber/Sprite.cs" Line="1" Column="1" />
@@ -11,7 +11,7 @@
       <File FileName="bomber/TileMap.cs" Line="1" Column="1" />
       <File FileName="bomber/Tile.cs" Line="1" Column="1" />
       <File FileName="bomber/BitmapFont.cs" Line="1" Column="1" />
-      <File FileName="bomber/Powerup.cs" Line="96" Column="14" />
+      <File FileName="bomber/Powerup.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -21,7 +21,7 @@
               <Node name="Maps" expanded="True" />
               <Node name="Textures" expanded="True" />
             </Node>
-            <Node name="Bomb.cs" selected="True" />
+            <Node name="GameState.cs" selected="True" />
           </Node>
         </State>
       </Pad>
