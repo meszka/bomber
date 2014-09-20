@@ -188,7 +188,6 @@ namespace bomber
 
         public override void AfterDeath()
         {
-            //new Explosion(new Rectangle(Box.Center.X - 16, Box.Center.Y - 16, 32, 32));
             new Explosion(new Rectangle(Box.Center.X - (explosionSize / 2), Box.Center.Y - (explosionSize / 2), explosionSize, explosionSize));
         }
 

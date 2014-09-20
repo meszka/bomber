@@ -167,7 +167,6 @@ namespace bomber
                 bombHold += gameTime.ElapsedGameTime.Milliseconds;
                 if (bombHold > bombHoldMax)
                     bombHold = bombHoldMax;
-                //Console.WriteLine(bombHold);
             }
             if (kbs.IsKeyUp(controls["bomb"]) && bombHold > 0)
             {
@@ -192,7 +191,6 @@ namespace bomber
                         b.Throw(throwPower, Direction);
                     }
                 }
-                //Console.WriteLine(throwPower);
                 bombCooldown = 200;
                 bombHold = 0;
             }
