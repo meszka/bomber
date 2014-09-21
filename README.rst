@@ -4,6 +4,11 @@ Bomber
 
 A 2-player variation on Bomberman with platformer-style movement.
 
+You can download a binary release for Windows here:
+https://github.com/meszka/bomber/releases/download/v0.1/bomber.zip
+
+If you're on Linux, look below for build instructions.
+
 Build
 =====
 
