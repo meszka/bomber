@@ -15,6 +15,7 @@ Linux
 Requires mono.
 
 ::
+
     xbuild /p:Configuration=Release bomber.sln
     cd bomber
     ./bin/Release/bomber.exe
@@ -32,16 +33,37 @@ Controls
 Hold down the bomb key and release it to throw a bomb. The longer you hold the
 stronger the throw.
 
-Player 1
---------
+Red player
+----------
 
-A/D - move
-W - jump
-S - bomb
+* A/D - move
 
-Player 2
---------
+* W - jump
 
-Left/Right - move
-Up - jump
-Down - bomb
+* S - bomb
+
+Blue player
+-----------
+
+* Left/Right - move
+
+* Up - jump
+
+* Down - bomb
+
+Creating maps
+=============
+
+You can create your own maps by copying and editing the existing map files in
+the ``Content/Maps`` directory. A map is just a plain text file consisting of
+15 lines with 20 characters each. The characters have the following meaning:
+
+* space - empty space...
+
+* # - "hard" block (cannot be destroyed)
+
+* % - "soft" block (can be destroyed by an explosion)
+
+* 0 - red player's starting position
+
+* 1 - blue player's starting position
