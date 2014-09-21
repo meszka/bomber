@@ -75,9 +75,8 @@ namespace bomber
             Globals.Content = Content;
             Globals.Content.RootDirectory = "Content";
 
-            //graphics.PreferredBackBufferWidth = 1680;
-            //graphics.PreferredBackBufferHeight = 1050;
-            //graphics.IsFullScreen = true;
+            Globals.Graphics.PreferredBackBufferWidth = 640;
+            Globals.Graphics.PreferredBackBufferHeight = 480;
         }
 
         /// <summary>
