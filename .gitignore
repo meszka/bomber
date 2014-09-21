@@ -1,3 +1,6 @@
 *.userprefs
+*.suo
+*.csproj.user
 bin
 obj
+releases
